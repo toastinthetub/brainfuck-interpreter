@@ -3,11 +3,11 @@ use std::fs::File;
 use std::io::{self, Read};
 
 struct BrainfuckInterpreter {
-    memory: Vec<u8>, // tot memecells
-    pointer: usize, // current memcell
-    instructions: Vec<char>, // actual brainfuck
-    instruction_pointer: usize,
-    input_buffer: Vec<u8>, // input buf
+    memory: Vec<u8>,
+    pointer: usize,
+    instructions: Vec<char>,
+    instruction_pointer: usize, // penis
+    input_buffer: Vec<u8>,
 }
 
 impl BrainfuckInterpreter {
@@ -25,26 +25,26 @@ impl BrainfuckInterpreter {
         self.instructions = code.chars().collect();
         while self.instruction_pointer < self.instructions.len() {
             match self.instructions[self.instruction_pointer] {
-                '>' => self.pointer += 1,
-                '<' => self.pointer = self.pointer.checked_sub(1).unwrap_or(0),
-                '+' => self.increment(),
-                '-' => self.decrement(),
+                '>' => self.pointer = (self.pointer + 1) % self.memory.len(),
+                '<' => self.pointer = (self.pointer.checked_sub(1).unwrap_or_else(|| self.memory.len() - 1)) % self.memory.len(),
+                '+' => self.memory[self.pointer] = self.memory[self.pointer].wrapping_add(1),
+                '-' => self.memory[self.pointer] = self.memory[self.pointer].wrapping_sub(1),
                 '.' => self.output(),
                 ',' => self.input(),
                 '[' => self.start_loop(),
                 ']' => self.end_loop(),
-                _ => {} // everything els is comment
+                _ => {} // eeverythig esle acojejfsnkejfnaoakdjn
             }
             self.instruction_pointer += 1;
         }
     }
 
-    fn increment(&mut self) {
-        self.memory[self.pointer] = self.memory[self.pointer].wrapping_add(1);
+    fn increment_pointer(&mut self) {
+        self.pointer = (self.pointer + 1) % self.memory.len();
     }
 
-    fn decrement(&mut self) {
-        self.memory[self.pointer] = self.memory[self.pointer].wrapping_sub(1);
+    fn decrement_pointer(&mut self) {
+        self.pointer = (self.pointer.checked_sub(1).unwrap_or_else(|| self.memory.len() - 1)) % self.memory.len();
     }
 
     fn output(&self) {
@@ -88,7 +88,7 @@ impl BrainfuckInterpreter {
 
 fn main() {
     let mut args = env::args();
-    let _ = args.next();
+    let _ = args.next(); // Skip program name
 
     let filename = match args.next() {
         Some(name) => name,
