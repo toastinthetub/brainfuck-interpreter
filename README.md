@@ -1,2 +1,2 @@
 ### RBFI - Rust Brainfuck Interpreter
-# This is a useless piece of software. 
+this is a very simple brainfuck interpreter written in rust,
